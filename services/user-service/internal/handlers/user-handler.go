@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"band-manager/pkg/jwt_helper"
 	"band-manager/services/user-service/internal/dto"
 	user_mapper "band-manager/services/user-service/internal/mapper/custom/user"
 	"band-manager/services/user-service/internal/services"
-	"band-manager/services/user-service/pkg/jwt_helper"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"net/http"

@@ -7,7 +7,7 @@ RUN go mod tidy
 
 COPY . .
 
-RUN go build -o user-service ./cmd/main.go
+RUN go build -o band-service ./cmd/main.go
 
 FROM debian:bookworm-slim
 
@@ -15,8 +15,8 @@ WORKDIR /app
 
 COPY --from=builder /app/band-service .
 
-ENV PORT=8081
+ENV CONFIG_PATH="/app/config.yaml"
 
-EXPOSE 8081
+EXPOSE 8082
 
 CMD ["./band-service"]

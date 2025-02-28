@@ -5,7 +5,7 @@ services:
     build: ./band-service
     container_name: band-service
     ports:
-      - "8084:8084"
+      - "8082:8082"
     depends_on:
       - postgres
     env_file:
@@ -26,4 +26,4 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "5434:5432"

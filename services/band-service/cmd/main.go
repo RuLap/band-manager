@@ -1,9 +1,14 @@
 package main
 
 import (
+	"band-manager/pkg/auth"
+	"band-manager/pkg/jwt_helper"
+	"band-manager/pkg/recovery"
 	"band-manager/services/band-service/internal/config"
+	"band-manager/services/band-service/internal/repository"
+	"band-manager/services/band-service/internal/services"
 	"band-manager/services/band-service/internal/storage/postgres"
-	"github.com/RuLap/band-manager/pkg/recovery"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"log/slog"
 	"net/http"
@@ -13,7 +18,10 @@ func main() {
 	cfg := config.MustLoad()
 	slog.Info("loaded config successfuly")
 
-	postgres.InitDB(cfg.PostgresConnString)
+	storage, err := postgres.InitDB(cfg.PostgresConnString)
+	if err != nil {
+		slog.Error("failed to init postgres", "error", err)
+	}
 	slog.Info("init postgres connection successfully")
 
 	router := chi.NewRouter()
@@ -21,7 +29,20 @@ func main() {
 
 	http.HandleFunc("/panic", recovery.Middleware(panicHandler))
 
+	bandRepo := repository.NewBandRepository(storage.Database())
+	memberRepo := repository.NewMemberRepository(storage.Database())
+
+	bandService := services.NewBandService(bandRepo, memberRepo)
+	memberService := services.NewMemberService(memberRepo)
+
+	//TODO: Pass to handlers
+	fmt.Println(bandService, memberService)
+
 	router.Group(func(r chi.Router) {
+		r.Use(
+			jwt_helper.Middleware,
+			auth.Middleware,
+		)
 	})
 
 	slog.Info("init routes successfuly")

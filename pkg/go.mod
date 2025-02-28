@@ -1,4 +1,4 @@
-module band-manager
+module band-manager/pkg
 
 go 1.24.0
 

@@ -1,13 +1,14 @@
 package main
 
 import (
+	"band-manager/pkg/auth"
+	"band-manager/pkg/jwt_helper"
+	"band-manager/pkg/recovery"
 	"band-manager/services/user-service/internal/config"
 	"band-manager/services/user-service/internal/handlers"
 	"band-manager/services/user-service/internal/repository"
 	"band-manager/services/user-service/internal/services"
 	"band-manager/services/user-service/internal/storage/postgres"
-	"band-manager/services/user-service/pkg/jwt_helper"
-	"github.com/RuLap/band-manager/pkg/recovery"
 	"github.com/go-chi/chi/v5"
 	"log/slog"
 	"net/http"
@@ -17,7 +18,10 @@ func main() {
 	cfg := config.MustLoad()
 	slog.Info("loaded config successfuly")
 
-	postgres.InitDB(cfg.PostgresConnString)
+	storage, err := postgres.InitDB(cfg.PostgresConnString)
+	if err != nil {
+		slog.Error("failed to init postgres", "error", err)
+	}
 	slog.Info("init postgres connection successfully")
 
 	if err := jwt_helper.NewJwtHelper(cfg.JWT.Secret); err != nil {
@@ -31,7 +35,7 @@ func main() {
 
 	http.HandleFunc("/panic", recovery.Middleware(panicHandler))
 
-	userRepo := repository.NewUserRepository(postgres.GetDB())
+	userRepo := repository.NewUserRepository(storage.Database())
 	slog.Info("init repositories successfuly")
 
 	userService := services.NewUserService(userRepo)
@@ -43,6 +47,14 @@ func main() {
 	router.Group(func(r chi.Router) {
 		r.Post("/login", userHandler.Login)
 		r.Post("/register", userHandler.Register)
+	})
+
+	router.Group(func(r chi.Router) {
+		r.Use(
+			jwt_helper.Middleware,
+			auth.Middleware,
+		)
+
 		r.Post("/users/{id}", userHandler.GetUser)
 	})
 
