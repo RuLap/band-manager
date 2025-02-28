@@ -7,7 +7,7 @@ import (
 	"band-manager/services/user-service/internal/services"
 	"band-manager/services/user-service/internal/storage/postgres"
 	"band-manager/services/user-service/pkg/jwt_helper"
-	"band-manager/services/user-service/pkg/recovery"
+	"github.com/RuLap/band-manager/pkg/recovery"
 	"github.com/go-chi/chi/v5"
 	"log/slog"
 	"net/http"

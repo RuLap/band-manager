@@ -4,12 +4,13 @@ import (
 	"band-manager/services/user-service/internal/models"
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, user *models.User) (string, error)
-	GetByID(ctx context.Context, id string) (*models.User, error)
+	Create(ctx context.Context, user *models.User) (uuid.UUID, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*models.User, error)
 	GetByEmail(ctx context.Context, email string) (*models.User, error)
 }
 
@@ -21,16 +22,16 @@ func NewUserRepository(db *pgxpool.Pool) UserRepository {
 	return &userRepository{db: db}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *models.User) (string, error) {
+func (r *userRepository) Create(ctx context.Context, user *models.User) (uuid.UUID, error) {
 	query := `INSERT INTO users (first_name, last_name, email, password, photo_url) 
               VALUES ($1, $2, $3, $4, $5) RETURNING id`
-	var id string
+	var id uuid.UUID
 	err := r.db.QueryRow(ctx, query,
 		user.FirstName, user.LastName, user.Email, user.Password, user.PhotoUrl).Scan(&id)
 	return id, err
 }
 
-func (r *userRepository) GetByID(ctx context.Context, id string) (*models.User, error) {
+func (r *userRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	query := `SELECT * FROM users WHERE id = $1`
 	row := r.db.QueryRow(ctx, query, id)
 

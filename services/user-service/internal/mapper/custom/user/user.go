@@ -16,7 +16,7 @@ func RegisterDTOToEntity(dto *dto.UserRegisterDTO) models.User {
 
 func EntityToInfoDTO(user *models.User) dto.UserInfoDTO {
 	return dto.UserInfoDTO{
-		ID:        user.ID,
+		ID:        user.ID.String(),
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     user.Email,

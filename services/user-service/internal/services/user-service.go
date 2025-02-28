@@ -40,7 +40,7 @@ func (s *userService) Register(ctx context.Context, userDto *dto.UserRegisterDTO
 	}
 
 	user := user_mapper.RegisterDTOToEntity(userDto)
-	user.ID = uuid.NewString()
+	user.ID = uuid.New()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -84,7 +84,12 @@ func (s *userService) Login(ctx context.Context, email string, password string) 
 }
 
 func (s *userService) GetByID(ctx context.Context, id string) (*dto.UserInfoDTO, error) {
-	user, err := s.userRepo.GetByID(ctx, id)
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.userRepo.GetByID(ctx, uid)
 	if err != nil {
 		slog.Error("failed to get user", "userID", id, "error", err)
 	}
