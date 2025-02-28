@@ -10,29 +10,29 @@ import (
 
 type Config struct {
 	Env                string `yaml:"env" env-default:"local"`
-	PostgresConnString string `yaml:"postgres_conn_string" env-required:"true"`
+	PostgresConnString string `yaml:"postgres_conn_string" env:"POSTGRES_CONN_STRING"`
 	HTTPServer         `yaml:"http_server"`
 	JWT                `yaml:"jwt"`
 }
 
 type HTTPServer struct {
 	Address     string        `yaml:"address" env-default:"localhost:8080"`
-	Timeout     time.Duration `yaml:"timeout" enc-default:"4s"`
-	IdleTimeout time.Duration `yaml:"idle_timeout" enc-default:"60s"`
+	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
 type JWT struct {
-	Secret string `yaml:"secret" env-required:"true"`
+	Secret string `yaml:"secret" env:"JWT_SECRET"`
 }
 
 func MustLoad() *Config {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
-		log.Fatal("CONFIG_PATH is not set")
+		configPath = "config.yaml"
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalf("config file does not exists: %s", configPath)
+		log.Fatalf("config file does not exist: %s", configPath)
 	}
 
 	var cfg Config

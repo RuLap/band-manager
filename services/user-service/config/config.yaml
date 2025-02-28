@@ -1,0 +1,9 @@
+env: "dev"
+http_server:
+  address: "0.0.0.0:8083"
+  timeout: 5s
+  idle_timeout: 60s
+postgres:
+  conn_string: "${POSTGRES_CONN_STRING}"
+jwt:
+  secret: "${JWT_SECRET}"
