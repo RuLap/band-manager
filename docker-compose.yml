@@ -22,8 +22,8 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${USER_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${USER_POSTGRES_PASSWORD}
       POSTGRES_DB: ${USER_POSTGRES_NAME}
     ports:
       - "5433:5432"
@@ -51,8 +51,8 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${BAND_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${BAND_POSTGRES_PASSWORD}
       POSTGRES_DB: band_db
     ports:
       - "5434:5432"

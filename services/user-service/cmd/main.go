@@ -1,14 +1,14 @@
 package main
 
 import (
-	"band-manager/pkg/auth"
-	"band-manager/pkg/jwt_helper"
-	"band-manager/pkg/recovery"
 	"band-manager/services/user-service/internal/config"
 	"band-manager/services/user-service/internal/handlers"
 	"band-manager/services/user-service/internal/repository"
 	"band-manager/services/user-service/internal/services"
 	"band-manager/services/user-service/internal/storage/postgres"
+	"github.com/RuLap/band-manager/pkg/auth"
+	"github.com/RuLap/band-manager/pkg/jwt_helper"
+	"github.com/RuLap/band-manager/pkg/recovery"
 	"github.com/go-chi/chi/v5"
 	"log/slog"
 	"net/http"

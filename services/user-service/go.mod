@@ -3,7 +3,7 @@ module band-manager/services/user-service
 go 1.24.0
 
 require (
-	band-manager/pkg v0.0.0
+	github.com/RuLap/band-manager v0.0.0
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
@@ -25,5 +25,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
-
-replace band-manager/pkg => ../../pkg

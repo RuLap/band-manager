@@ -12,8 +12,13 @@ services:
       - .env
     volumes:
       - ./services/user-service/config/config.yaml:/app/config.yaml
+      - ./services/user-service/migrations:/app/migrations
     environment:
       CONFIG_PATH: "/app/config.yaml"
+    command: >
+      sh -c "goose -dir /app/migrations postgres 
+      '$POSTGRES_CONN_STRING?sslmode=disable' up &&
+      ./user-service"
 
   postgres:
     image: postgres:15
