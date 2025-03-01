@@ -5,10 +5,10 @@ import (
 	"band-manager/pkg/jwt_helper"
 	"band-manager/pkg/recovery"
 	"band-manager/services/band-service/internal/config"
+	"band-manager/services/band-service/internal/handlers"
 	"band-manager/services/band-service/internal/repository"
 	"band-manager/services/band-service/internal/services"
 	"band-manager/services/band-service/internal/storage/postgres"
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"log/slog"
 	"net/http"
@@ -35,14 +35,19 @@ func main() {
 	bandService := services.NewBandService(bandRepo, memberRepo)
 	memberService := services.NewMemberService(memberRepo)
 
-	//TODO: Pass to handlers
-	fmt.Println(bandService, memberService)
+	bandHandler := handlers.NewBandHandler(bandService)
+	memberHandler := handlers.NewMemberHandler(memberService)
 
 	router.Group(func(r chi.Router) {
 		r.Use(
 			jwt_helper.Middleware,
 			auth.Middleware,
 		)
+
+		r.Post("/bands", bandHandler.Create)
+		r.Get("/bands/id", bandHandler.GetBand)
+
+		r.Get("/members", memberHandler.GetMember)
 	})
 
 	slog.Info("init routes successfuly")
